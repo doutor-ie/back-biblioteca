@@ -1,45 +1,42 @@
-version: '3.8'
+version: '3.4'
 
 services:
-  web:
-    image: nginx:latest
-    ports:
-      - "8080:80"
+  server:
+    image: nginx
     volumes:
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      - .:/var/www/html
-    depends_on:
-      - app
-      - mysql
+      - ./:/var/www/html
+      - .docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - ${APP_PORT}:80
     networks:
-      - laravel
+      - backend
 
   app:
-    build:
-      context: .
+    build: .docker/php
+    image: php:8.0.6
     volumes:
-      - .:/var/www/html
-    ports:
-      - "9000:9000"
-    depends_on:
-      - mysql
+      - ./:/var/www/html:rw
+    environment:
+      XDEBUG_CONFIG: remote_host=host.docker.internal
+      COMPOSER_MEMORY_LIMIT: -1
     networks:
-      - laravel
+      - backend
 
   mysql:
     image: mysql:5.7
     container_name: medb_mysql
     ports:
-      - "${DB_EXTERNAL_PORT}:3306"
+      - ${DB_EXTERNAL_PORT}:3306
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
       MYSQL_USER: ${DB_USERNAME}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - ./docker/mysql:/var/lib/mysql
+      - .docker/mysql:/var/lib/mysql
     networks:
-      - laravel
+      - backend
 
 networks:
-  laravel:
+  backend:
+    external: true

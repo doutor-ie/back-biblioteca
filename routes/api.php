@@ -23,12 +23,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/', [LivrosController::class, 'store']);
         Route::get('/', [LivrosController::class, 'index']);
         Route::get('/{id}/importar-indices-xml', [LivrosController::class, 'gerarXml']);
-
-
-  
     });
-
-
-
 
 });
