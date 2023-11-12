@@ -20,10 +20,7 @@ RUN apt-get update && apt-get install -y \
     git \
     supervisor \
     ghostscript \
-    libmagickwand-dev --no-install-recommends \
-    tesseract-ocr \
-    tesseract-ocr-por \
-    && pecl install imagick
+    libmagickwand-dev --no-install-recommends 
 
 # Clear cache
 RUN apt-get clean \
